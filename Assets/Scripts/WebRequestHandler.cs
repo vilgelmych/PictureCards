@@ -8,12 +8,7 @@ using UnityEngine.Networking;
 
 public class WebRequestHandler
 {
-   
-    static string url = "https://picsum.photos/";
-
-    static int sizeImg = 200;
-   
-    public static IEnumerator GetImage(UnityAction<Texture> result) 
+    public static IEnumerator GetImage(string url, int sizeImg, UnityAction<Texture> result) 
     {
         using (var uwr = new UnityWebRequest(url + sizeImg, UnityWebRequest.kHttpVerbGET))
         {
@@ -24,6 +19,4 @@ public class WebRequestHandler
             uwr.Dispose();
         }
     }
-
-   
 }

@@ -7,35 +7,35 @@ using UnityEngine.Events;
 
 
 /// <summary>
-/// Анимация переворачивания карточки
+/// РђРЅРёРјР°С†РёСЏ РїРµСЂРµРІРѕСЂР°С‡РёРІР°РЅРёСЏ РєР°СЂС‚РѕС‡РєРё
 /// </summary>
 public class AnimFlipCard : MonoBehaviour
 {
     /// <summary>
-    /// Общее время анимации
+    /// РћР±С‰РµРµ РІСЂРµРјСЏ Р°РЅРёРјР°С†РёРё 
     /// </summary>
-    float time = 1f;
+    float time = 0.2f;
 
     /// <summary>
-    /// Стартовый угол (лицевая сторона каторчки)
+    /// РЎС‚Р°СЂС‚РѕРІС‹Р№ СѓРіРѕР» (Р»РёС†РµРІР°СЏ СЃС‚РѕСЂРѕРЅР° РєР°С‚РѕСЂС‡РєРё)
     /// </summary>
     Vector3 zeroTurn = Vector3.zero;
 
     /// <summary>
-    /// Половина поворота
+    /// РџРѕР»РѕРІРёРЅР° РїРѕРІРѕСЂРѕС‚Р°
     /// </summary>
     Vector3 halfTurn = new Vector3(0, 90, 0);
 
     /// <summary>
-    /// Полный поворот (обратная сторона карточки)
+    /// РџРѕР»РЅС‹Р№ РїРѕРІРѕСЂРѕС‚ (РѕР±СЂР°С‚РЅР°СЏ СЃС‚РѕСЂРѕРЅР° РєР°СЂС‚РѕС‡РєРё)
     /// </summary>
     Vector3 fullTurn = new Vector3(0, 180, 0);
 
    /// <summary>
-   /// Переворот карточки
+   /// РџРµСЂРµРІРѕСЂРѕС‚ РєР°СЂС‚РѕС‡РєРё
    /// </summary>
-   /// <param name="isFront"> открыта (лицевая сторона)/закрыта карточка</param>
-   /// <param name="action"> событие при открытии/закрытии карточки</param>
+   /// <param name="isFront"> РѕС‚РєСЂС‹С‚Р° (Р»РёС†РµРІР°СЏ СЃС‚РѕСЂРѕРЅР°)/Р·Р°РєСЂС‹С‚Р° РєР°СЂС‚РѕС‡РєР°</param>
+   /// <param name="action"> СЃРѕР±С‹С‚РёРµ РїСЂРё РѕС‚РєСЂС‹С‚РёРё/Р·Р°РєСЂС‹С‚РёРё РєР°СЂС‚РѕС‡РєРё</param>
     public void FlipCard(bool isFront , UnityAction action)
     {
         transform.DOLocalRotate(halfTurn, time / 2).OnComplete( () =>               

@@ -7,26 +7,30 @@ using UnityEngine.UI;
 public class CardsManager : MonoBehaviour
 {
     /// <summary>
-    /// Набор карточек
+    /// Р Р°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјС‹С… РєР°СЂС‚РёРЅРѕРє
+    /// </summary>
+    const int sizeImg = 200;
+
+    /// <summary>
+    /// РЎРїРёСЃРѕРє РєР°СЂС‚РѕС‡РµРє
     /// </summary>
     public List<Card> Cards;
 
-
     /// <summary>
-    /// Метод загрузки
-    /// 0 - Параллельный
-    /// 1 - Последовательный
-    /// 2 - По готовности
+    /// РњРµС‚РѕРґС‹ Р·Р°РіСЂСѓР·РєРё
+    /// 0 - РџР°СЂР°Р»Р»РµР»СЊРЅР°СЏ
+    /// 1 - РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅР°СЏ
+    /// 2 - РџРѕ РіРѕС‚РѕРІРЅРѕСЃС‚Рё
     /// </summary>
-    public Dropdown LoadingMethodDropdown;
+    public Dropdown MethodLoadingDropdown;
 
     /// <summary>
-    /// Кнопка старта загрузки
+    /// РљРЅРѕРїРєР° СЃС‚Р°СЂС‚Р° Р·Р°РіСЂСѓР·РєРё
     /// </summary>
     public Button LoadBtn;
 
     /// <summary>
-    /// Кнопка отмены загрузки
+    ///РљРЅРѕРїРєР° РѕС‚РјРµРЅС‹ Р·Р°РіСЂСѓР·РєРё
     /// </summary>
     public Button CancelBtn;
 
@@ -35,47 +39,114 @@ public class CardsManager : MonoBehaviour
     {
         Cards = FindObjectsOfType<Card>().ToList();
         Cards.ForEach(c => c.IsOpenCard = false);
+
+        CancelBtn.onClick.AddListener(CancelLoad);
     }
 
 
-    public void LoadCardImage()
+    public void CancelLoad()
     {
-        switch (LoadingMethodDropdown.value)
+        StopAllCoroutines();
+        UnloadAllCard();
+        FlipAllCard(false);
+        InteractUIControls(true);
+    }
+
+    public void LoadCardsImage()
+    {
+        FlipAllCard(false);
+        UnloadAllCard();
+        InteractUIControls(false);
+
+        switch (MethodLoadingDropdown.value)
         {
             case 0:
-                AllAtOnce();
+                StartCoroutine( AllAtOnce());
                 break;
             case 1:
-                OneByOne();
+                StartCoroutine(OneByOne());
                 break;               
             case 2:
-                WhenImageReady();
+                StartCoroutine(WhenImageReady());
                 break;
         }
     }
 
     /// <summary>
-    /// Параллельная загрузка
+    /// РџР°СЂР°Р»Р»РµР»СЊРЅР°СЏ Р·Р°РіСЂСѓР·РєР°
     /// </summary>
-    void AllAtOnce()
+    IEnumerator AllAtOnce()
     {
-
+        foreach (var card in Cards)
+        {
+            card.StartImageLoad(ResourcesAssets.ImageUrl, sizeImg);
+        }
+        while (Cards.Find(c =>!c.IsLoadedImage))
+            yield return null;
+        FlipAllCard(true);
+        InteractUIControls(true);
     }
 
     /// <summary>
-    /// Последовательная загрузка
+    /// РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅР°СЏ Р·Р°РіСЂСѓР·РєР°
     /// </summary>
-    void OneByOne()
+    IEnumerator OneByOne()
     {
-
+        foreach (var card in Cards)
+        {
+            card.StartImageLoad(ResourcesAssets.ImageUrl, sizeImg);
+            while (!card.IsLoadedImage)
+                yield return null;
+            card.IsOpenCard = true;
+        }
+        
+        InteractUIControls(true);
     }
 
     /// <summary>
-    /// Загрузка и показ изображений по готовности
+    /// Р—Р°РіСЂСѓР·РєР° Рё РїРѕРєР°Р· РёР·РѕР±СЂР°Р¶РµРЅРёР№ РїРѕ РіРѕС‚РѕРІРЅРѕСЃС‚Рё
     /// </summary>
-    void WhenImageReady()
+    IEnumerator WhenImageReady()
     {
+        foreach (var card in Cards)
+        {
+            card.StartImageLoad(ResourcesAssets.ImageUrl, sizeImg);
+            card.IsOpenLoadedImage = true;
+        }
 
+        while (Cards.Find(c => !c.IsOpenCard))
+            yield return null;        
+        InteractUIControls(true);
+    }
+
+
+    /// <summary>
+    /// РџРµСЂРµРІРѕСЂРѕС‚ РІСЃРµС… РєР°СЂС‚РѕС‡РµРє
+    /// </summary>
+    /// <param name="isopen"></param>
+    void FlipAllCard(bool isopen)
+    {
+        foreach (var card in Cards)
+        {          
+            card.IsOpenCard = isopen;
+        }
+    }
+
+    /// <summary>
+    ///Р Р°Р·РіСЂСѓР·РёС‚СЊ РІСЃРµ РєР°СЂС‚РёРЅРєРё
+    /// </summary>
+    void UnloadAllCard()
+    {
+        Cards.ForEach(c => c.UnloadImage());
+    }
+
+    /// <summary>
+    /// РРЅС‚РµСЂР°РєС‚РёРІРЅРѕСЃС‚СЊ UI РєРѕРЅС‚СЂРѕР»РѕРІ
+    /// </summary>
+    /// <param name="isInteractable"></param>
+    void InteractUIControls(bool isInteractable)
+    {
+        LoadBtn.interactable = MethodLoadingDropdown.interactable = isInteractable;
     }
 
 }

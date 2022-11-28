@@ -1,46 +1,57 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 /// <summary>
-/// Карточка
+/// РљР°СЂС‚РѕС‡РєР°
 /// </summary>
 public class Card : MonoBehaviour
 {
     /// <summary>
-    /// Картинка на карточке
+    /// РљР°СЂС‚РёРЅРєР° РЅР° РєР°СЂС‚РѕС‡РєРµ
     /// </summary>
     public RawImage CardRawImage;
 
     /// <summary>
-    /// Обложка карточки
+    /// РћР±Р»РѕР¶РєР° РєР°СЂС‚РѕС‡РєРё
     /// </summary>
     public Image CoverImage;
 
     /// <summary>
-    /// Спрайт лицевой стороны карточки
+    /// РЎРїСЂР°Р№С‚ Р»РёС†РµРІРѕР№ СЃС‚РѕСЂРѕРЅС‹ РєР°СЂС‚РѕС‡РєРё
     /// </summary>
     Sprite FrontCardSprite;
 
     /// <summary>
-    /// Спрайт обратной стороны карточки
+    /// РЎРїСЂР°Р№С‚ РѕР±СЂР°С‚РЅРѕР№ СЃС‚РѕСЂРѕРЅС‹ РєР°СЂС‚РѕС‡РєРё
     /// </summary>
     public Sprite BackCardSprite;
 
+
+    /// <summary>
+    /// РђРЅРёРјР°С†РёСЏ РїРµСЂРµРІРѕСЂРѕС‚Р° РєР°СЂС‚РѕС‡РєРё
+    /// </summary>
     AnimFlipCard animFlipCard;
 
+    /// <summary>
+    /// РџСЂРёР·РЅР°Рє РѕС‚РєСЂС‹С‚РёСЏ РїСЂРё РѕРєРѕРЅС‡Р°РЅРёРё Р·Р°РіСЂСѓР·РєРё РєР°СЂС‚РёРЅРєРё
+    /// </summary>
+    public bool IsOpenLoadedImage;
 
     bool isLoadedImage;
 
     /// <summary>
-    /// Признак загруженности картинки
+    /// РџСЂРёР·РЅР°Рє Р·Р°РіСЂСѓР¶РµРЅРЅРѕСЃС‚Рё РєР°СЂС‚РёРЅРєРё
     /// </summary>
     public bool IsLoadedImage
     {
         private set
         {
             isLoadedImage = value;
+           
         }
 
         get
@@ -49,19 +60,33 @@ public class Card : MonoBehaviour
         }
     }
 
-    bool isOpenCard;
     /// <summary>
-    /// Признак открытости картинки
+    /// Р Р°Р·РіСЂСѓР·РєР° РєР°СЂС‚РёРЅРєРё
+    /// </summary>
+    public void UnloadImage()
+    {
+        IsLoadedImage = false;
+        IsOpenLoadedImage = false;
+        CardRawImage.texture = null;
+        Resources.UnloadUnusedAssets();
+    }
+
+    bool isOpenCard = true;
+    /// <summary>
+    /// РџСЂРёР·РЅР°Рє РѕС‚РєСЂС‹С‚РѕСЃС‚Рё РєР°СЂС‚РёРЅРєРё
     /// </summary>
     public bool IsOpenCard
     {
         set
         {
-            isOpenCard = value;
-            animFlipCard.FlipCard(isOpenCard, () => 
-                {
-                    CoverImage.sprite = isOpenCard ? FrontCardSprite : BackCardSprite;
-                });            
+            if (isOpenCard != value)
+            {
+                isOpenCard = value;
+                animFlipCard.FlipCard(isOpenCard, () =>
+                    {
+                        CoverImage.sprite = isOpenCard ? FrontCardSprite : BackCardSprite;
+                    });
+            }
         }
 
         get
@@ -70,6 +95,11 @@ public class Card : MonoBehaviour
         }
     }
 
+
+    public void OpenCard()
+    {
+        IsOpenCard = true;
+    }
     private void Awake()
     {
         FrontCardSprite = CoverImage.sprite;
@@ -77,17 +107,19 @@ public class Card : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    public void StartImageLoad(string url, int size, UnityAction callback = null)
     {
-        //StartCoroutine(WebRequestHandler.GetImage(SetImage));
+        StartCoroutine(WebRequestHandler.GetImage(url, size, SetImage));
     }
 
     void SetImage(Texture texture)
     {
         CardRawImage.texture = texture;
         IsLoadedImage = true;
+        if(IsOpenLoadedImage)
+            IsOpenCard = true;
     }
-
+       
     
     
 }
