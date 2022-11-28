@@ -11,10 +11,22 @@ public class CardsManager : MonoBehaviour
     /// </summary>
     const int sizeImg = 200;
 
+    public int CardsCount = 6;
+
+    /// <summary>
+    /// Префаб карточки
+    /// </summary>
+    public GameObject CardPrefab;
+
+    /// <summary>
+    /// Родитель карточек
+    /// </summary>
+    public GameObject CardsParent;
+
     /// <summary>
     /// Список карточек
     /// </summary>
-    public List<Card> Cards;
+    List<Card> Cards;
 
     /// <summary>
     /// Методы загрузки
@@ -37,7 +49,13 @@ public class CardsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Cards = FindObjectsOfType<Card>().ToList();
+        Cards = new List<Card>();
+        for (int i = 0; i < CardsCount; i++)
+        {
+            GameObject go = Instantiate(CardPrefab, CardsParent.transform);
+            Cards.Add(go.GetComponent<Card>());
+        }
+      
         Cards.ForEach(c => c.IsOpenCard = false);
 
         CancelBtn.onClick.AddListener(CancelLoad);
