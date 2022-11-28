@@ -17,7 +17,7 @@ public class AnimFlipCard : MonoBehaviour
     float time = 0.2f;
 
     /// <summary>
-    /// Стартовый угол (лицевая сторона каторчки)
+    /// Стартовый угол (лицевая сторона карточки)
     /// </summary>
     Vector3 zeroTurn = Vector3.zero;
 
@@ -34,8 +34,8 @@ public class AnimFlipCard : MonoBehaviour
    /// <summary>
    /// Переворот карточки
    /// </summary>
-   /// <param name="isFront"> открыта (лицевая сторона)/закрыта карточка</param>
-   /// <param name="action"> событие при открытии/закрытии карточки</param>
+   /// <param name="isFront">Открыта (лицевая сторона)/закрыта карточка</param>
+   /// <param name="action">Событие при открытии/закрытии карточки</param>
     public void FlipCard(bool isFront , UnityAction action)
     {
         transform.DOLocalRotate(halfTurn, time / 2).OnComplete( () =>               

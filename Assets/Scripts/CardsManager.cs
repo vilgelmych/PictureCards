@@ -61,7 +61,9 @@ public class CardsManager : MonoBehaviour
         CancelBtn.onClick.AddListener(CancelLoad);
     }
 
-
+    /// <summary>
+    /// Отмена всех загрузок
+    /// </summary>
     public void CancelLoad()
     {
         StopAllCoroutines();
@@ -70,6 +72,9 @@ public class CardsManager : MonoBehaviour
         InteractUIControls(true);
     }
 
+    /// <summary>
+    /// Загрузка картинок выбранным методом
+    /// </summary>
     public void LoadCardsImage()
     {
         FlipAllCard(false);
